@@ -32,6 +32,14 @@ public class AdminTagsController : Controller
         _dbContext.Tags.Add(tag);
         _dbContext.SaveChanges();
         
-        return View("Add");
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    public IActionResult List()
+    {
+        // use dbContext to read tags
+        var tags = _dbContext.Tags.ToList();
+        return View(tags);
     }
 }
