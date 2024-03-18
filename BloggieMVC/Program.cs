@@ -9,6 +9,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BloggieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnString")));
 builder.Services.AddScoped<ITagInterface, TagRepository>();
+builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 
 var app = builder.Build();
 
