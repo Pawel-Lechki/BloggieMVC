@@ -90,4 +90,20 @@ public class AdminTagsController : Controller
         // show fail notification
         return RedirectToAction("Edit", new { id = editTagRequest.Id});
     }
+
+    [HttpPost]
+    public IActionResult Delete(EditTagRequest editTagRequest)
+    {
+        var existingTag = _dbContext.Tags.Find(editTagRequest.Id);
+        if (existingTag != null)
+        {
+            _dbContext.Tags.Remove(existingTag);
+            _dbContext.SaveChanges();
+            
+            // show succes notitifaction
+            return RedirectToAction("List");
+        }
+
+        return RedirectToAction("Edit", new { Id = editTagRequest.Id});
+    }
 }
