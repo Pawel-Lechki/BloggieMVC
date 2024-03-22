@@ -12,13 +12,19 @@ public class BlogPostRepository : IBlogPostRepository
     {
         _dbContext = dbContext;
     }
+
+    public async Task<BlogPost?> GetByUrlHandelAsync(string urlHandel)
+    {
+        return await _dbContext.BlogPosts.Include(x => x.Tags).FirstOrDefaultAsync(x => x.UrlHandle == urlHandel);
+    }
+
     public async Task<BlogPost> AddAsync(BlogPost blogPost)
     {
         await _dbContext.AddAsync(blogPost);
         await _dbContext.SaveChangesAsync();
         return blogPost;
     }
-    public async Task<IEnumerable<BlogPost>> GetAllAsync()
+    public async Task<List<BlogPost>> GetAllAsync()
     {
         return await _dbContext.BlogPosts.Include(x => x.Tags).ToListAsync();
     }
@@ -43,7 +49,7 @@ public class BlogPostRepository : IBlogPostRepository
             existingBlogPost.FeaturedImageUrl = blogPost.FeaturedImageUrl;
             existingBlogPost.UrlHandle = blogPost.UrlHandle;
             existingBlogPost.Visible = blogPost.Visible;
-            existingBlogPost.PublisheDate = blogPost.PublisheDate;
+            existingBlogPost.PublishedDate = blogPost.PublishedDate;
             existingBlogPost.Tags = blogPost.Tags;
 
             await _dbContext.SaveChangesAsync();

@@ -12,7 +12,7 @@ public class TagRepository : ITagInterface
     {
         _dbContext = dbContext;
     }
-    public async Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<List<Tag>> GetAllAsync()
     {
         return await _dbContext.Tags.ToListAsync();
     }

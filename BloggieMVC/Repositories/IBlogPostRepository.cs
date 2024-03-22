@@ -5,8 +5,9 @@ namespace BloggieMVC.Repositories;
 
 public interface IBlogPostRepository
 {
-    Task<IEnumerable<BlogPost>> GetAllAsync();
+    Task<List<BlogPost>> GetAllAsync();
     Task<BlogPost?> GetAsync(Guid id);
+    Task<BlogPost?> GetByUrlHandelAsync(string urlHandel);
     Task<BlogPost> AddAsync(BlogPost blogPost);
     Task<BlogPost?> UpdateAsync(BlogPost blogPost);
     Task<BlogPost?> DeleteAsync(Guid id);

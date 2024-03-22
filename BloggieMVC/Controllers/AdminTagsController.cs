@@ -2,12 +2,14 @@
 using BloggieMVC.Models.Domain;
 using BloggieMVC.Models.ViewModels;
 using BloggieMVC.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BloggieMVC.Controllers;
 
+[Authorize(Roles ="Admin")]
 public class AdminTagsController : Controller
 {
     private readonly ITagInterface _tagRepository;
@@ -16,6 +18,7 @@ public class AdminTagsController : Controller
     {
         _tagRepository = tagRepository;
     }
+    
     
     [HttpGet]
     public IActionResult Add()

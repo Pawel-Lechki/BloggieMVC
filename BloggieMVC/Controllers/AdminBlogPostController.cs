@@ -1,11 +1,13 @@
 ﻿using BloggieMVC.Models.Domain;
 using BloggieMVC.Models.ViewModels;
 using BloggieMVC.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BloggieMVC.Controllers;
 
+[Authorize(Roles ="Admin")]
 public class AdminBlogPostController : Controller
 {
     private readonly ITagInterface _tagRepository;
@@ -43,7 +45,7 @@ public class AdminBlogPostController : Controller
             ShortDescription = addBlogPostRequest.ShortDescription,
             FeaturedImageUrl = addBlogPostRequest.FeaturedImageUrl,
             UrlHandle = addBlogPostRequest.UrlHandle,
-            PublisheDate = addBlogPostRequest.PublisheDate,
+            PublishedDate = addBlogPostRequest.PublishedDate,
             Author = addBlogPostRequest.Author,
             Visible = addBlogPostRequest.Visible,
         };
@@ -97,7 +99,7 @@ public class AdminBlogPostController : Controller
                 FeaturedImageUrl = blogPost.FeaturedImageUrl,
                 UrlHandle = blogPost.UrlHandle,
                 ShortDescription = blogPost.ShortDescription,
-                PublisheDate = blogPost.PublisheDate,
+                PublishedDate = blogPost.PublishedDate,
                 Visible = blogPost.Visible,
                 Tags = tagsDomainModel.Select(x => new SelectListItem
                 {
@@ -127,7 +129,7 @@ public class AdminBlogPostController : Controller
             Author = editBlogPostRequest.Author,
             ShortDescription = editBlogPostRequest.ShortDescription,
             FeaturedImageUrl = editBlogPostRequest.FeaturedImageUrl,
-            PublisheDate = editBlogPostRequest.PublisheDate,
+            PublishedDate = editBlogPostRequest.PublishedDate,
             UrlHandle = editBlogPostRequest.UrlHandle,
             Visible = editBlogPostRequest.Visible
         };
