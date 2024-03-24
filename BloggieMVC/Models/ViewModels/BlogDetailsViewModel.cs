@@ -1,6 +1,8 @@
-﻿namespace BloggieMVC.Models.Domain;
+﻿using BloggieMVC.Models.Domain;
 
-public class BlogPost
+namespace BloggieMVC.Models.ViewModels;
+
+public class BlogDetailsViewModel
 {
     public Guid Id { get; set; }
     public string Heading { get; set; }
@@ -12,8 +14,9 @@ public class BlogPost
     public DateTime PublishedDate { get; set; }
     public string Author { get; set; }
     public bool Visible { get; set; }
-
     public ICollection<Tag> Tags { get; set; }
+    
+    public int TotalLikes { get; set; }
 
-    public ICollection<BlogPostLike> Likes { get; set; }
+    public bool Liked { get; set; }
 }
