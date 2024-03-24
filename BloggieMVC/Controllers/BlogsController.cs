@@ -1,4 +1,5 @@
-﻿using BloggieMVC.Models.ViewModels;
+﻿using BloggieMVC.Models.Domain;
+using BloggieMVC.Models.ViewModels;
 using BloggieMVC.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,15 @@ public class BlogsController : Controller
     private readonly IBlogPostLikeRepository _blogPostLikeRepository;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IBlogPostCommentRepository _blogPostCommentRepository;
 
-    public BlogsController(IBlogPostRepository blogPostRepository, IBlogPostLikeRepository blogPostLikeRepository, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+    public BlogsController(IBlogPostRepository blogPostRepository, IBlogPostLikeRepository blogPostLikeRepository, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IBlogPostCommentRepository blogPostCommentRepository)
     {
         _blogPostRepository = blogPostRepository;
         _blogPostLikeRepository = blogPostLikeRepository;
         _signInManager = signInManager;
         _userManager = userManager;
+        _blogPostCommentRepository = blogPostCommentRepository;
     }
     [HttpGet]
     public async Task<IActionResult> Index(string urlHandle)
@@ -43,6 +46,21 @@ public class BlogsController : Controller
                 }
             }
             
+            // Get comments for blog post
+            var blogCommenstsDomainModel = await _blogPostCommentRepository.GetCommentsByBlogIdAsync(blogPost.Id);
+
+            var blogCommentForView = new List<BlogComment>();
+
+            foreach (var blogComment in blogCommenstsDomainModel)
+            {
+                blogCommentForView.Add(new BlogComment
+                {
+                    Description = blogComment.Description,
+                    DateAdded = blogComment.DateAdded,
+                    Username = (await _userManager.FindByIdAsync(blogComment.UserId.ToString())).UserName
+                });
+            }
+            
             blogDerailsViewModel = new BlogDetailsViewModel
             {
                 Id = blogPost.Id,
@@ -57,10 +75,31 @@ public class BlogsController : Controller
                 Visible = blogPost.Visible,
                 Tags = blogPost.Tags,
                 TotalLikes = totalLikes,
-                Liked = liked
+                Liked = liked,
+                Comments = blogCommentForView
             };
         }
         
         return View(blogDerailsViewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(BlogDetailsViewModel blogDetailsViewModel)
+    {
+        if (_signInManager.IsSignedIn(User))
+        {
+            var domainModel = new BlogPostComment
+            {
+                BlogPostId = blogDetailsViewModel.Id,
+                Description = blogDetailsViewModel.CommentDescription,
+                UserId = Guid.Parse(_userManager.GetUserId(User)),
+                DateAdded = DateTime.Now
+            };
+
+            await _blogPostCommentRepository.AddAsync(domainModel);
+            return RedirectToAction("Index", "Blogs", new { urlHandle = blogDetailsViewModel.UrlHandle});
+        }
+
+        return View();
     }
 }

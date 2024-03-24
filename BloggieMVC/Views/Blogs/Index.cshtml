@@ -17,7 +17,7 @@
                     <span class="text-secondary">@Model.Author</span>
                     <span class="text-secondary">@Model.PublishedDate.ToShortDateString()</span>
                 </div>
-                
+
                 <div class="mb-3">
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -31,9 +31,8 @@
                         {
                             <a id="btnLike" style="cursor: pointer;">
                                 <i class="bi bi-hand-thumbs-up"></i>
-                            </a>    
+                            </a>
                         }
-                        
                     }
                     <span class="totalLikes">@Model.TotalLikes</span> likes
                 </div>
@@ -43,11 +42,52 @@
                         <span class="badge bg-secondary me-1">@tag.Name</span>
                     }
                 </div>
-                
-                <img src="@Model.FeaturedImageUrl" class="d-block img-fluid mg-3" />
-                
+
+                <img src="@Model.FeaturedImageUrl" class="d-block img-fluid mg-3"/>
+
                 <div class="mb-3 blog-details-content">
                     @Html.Raw(Model.Content)
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Coments</h5>
+
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label class="form-label">Comment Decription</label>
+                                    <input type="text" class="form-control" asp-for="CommentDescription"/>
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-dark">Submit</button>
+                                    <input type="hidden" asp-for="Id"/>
+                                    <input type="hidden" asp-for="UrlHandle"/>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Comments != null && Model.Comments.Any())
+                        {
+                            @foreach (var comment in Model.Comments)
+                            {
+                                <div class="mb-3">
+                                    <div class="card-body">
+                                        <div>
+                                            @comment.Description
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-secondary">@comment.Username</span>
+                                            <span class="text-secondary">@comment.DateAdded.ToShortDateString()</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            
+                        }
+                    </div>
                 </div>
             }
             else
